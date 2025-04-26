@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css"
+      rel="stylesheet"
+    />
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Barlow:wght@600&display=swap"
+      rel="stylesheet"
+    />
+    <title>Sessions</title>
+    <link rel="stylesheet" href="stylesheets/sessions.css" />
+    <script src="javascripts/sessions.js" defer></script>
+  </head>
+  <body>
+    <div class="container">
+      <div class="column left-drawer">
+        <div class="session-card-header">
+          <h1>Detection sessions</h1>
+          <button
+            id="start-stop-session"
+            class="view-picture-link"
+            onclick="handleSession()"
+          >
+            Start session
+          </button>
+        </div>
+
+        <div class="session-container" id="sessions-container"></div>
+      </div>
+      <div class="column labels-explorer">
+        <div class="info-screen" id="select-session-info">
+          <p id="select-session-info-no-session-selected">
+            <i class="bi bi-info-circle-fill"></i> Select a session to see its
+            labels
+          </p>
+          <p id="select-session-info-no-labels" style="display: none">
+            <i class="bi bi-info-circle-fill"></i> No labels found for this
+            session
+          </p>
+        </div>
+
+        <div id="labels-explorer"></div>
+      </div>
+    </div>
+  </body>
+</html>

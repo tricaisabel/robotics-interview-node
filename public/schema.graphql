@@ -1,0 +1,63 @@
+"""
+Exposes a URL that specifies the behaviour of this scalar.
+"""
+directive @specifiedBy(
+  """
+  The URL that specifies the behaviour of this scalar.
+  """
+  url: String!
+) on SCALAR
+
+"""
+A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the
+`date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO
+8601 standard for representation of dates and times using the Gregorian calendar.
+"""
+scalar DateTime
+
+type Mutation {
+  start_session: Session
+  end_session: Session
+  set_session_stats(detections: Int, resolved: Int): Session
+}
+
+type Query {
+  sessions: [Session]
+  session(id: ID!): Session
+  current_session: Session
+  labels(sessionId: ID!): [Label]
+}
+
+type Session {
+  id: ID
+  started: DateTime
+  ended: DateTime
+  detections: Int
+  resolved: Int
+}
+
+type Label {
+  id: ID
+  image: String
+  timestamp: DateTime
+  uuid: String
+  source_uuid: String
+  session: Session
+  data: LabelData
+}
+
+type LabelData {
+  timestamp: Float
+  uuid: String
+  cameraIndex: Int
+  cameraType: String
+  width: Int
+  height: Int
+  session: String
+  store_id: Int
+  x: Int
+  y: Int
+  w: Int
+  h: Int
+  source_uuid: String
+}
