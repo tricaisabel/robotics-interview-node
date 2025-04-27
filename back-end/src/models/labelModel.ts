@@ -1,29 +1,12 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Schema, Document } from "mongoose";
+import { LabelData } from "../types/labelData";
+import { Label, LabelBase } from "../types/Label";
 
-type LabelData =  {
-  readonly timestamp: number;
-  readonly uuid: string;
-  readonly cameraIndex: number;
-  readonly cameraType: string;
-  readonly width: number;
-  readonly height: number;
-  readonly session: string;
-  readonly store_id: number;
-  readonly x: number;
-  readonly y: number;
-  readonly w: number;
-  readonly h: number;
-  readonly source_uuid: string;
-};
-
-type LabelDocument = mongoose.Document & {
-  readonly image: Buffer | null;
-  readonly timestamp: Date;
-  readonly uuid: string;
-  readonly source_uuid: string | null;
-  readonly session: mongoose.Types.ObjectId;
-  readonly data: LabelData;
-};
+type LabelDocument = Document &
+  LabelBase & {
+    readonly image: Buffer | null;
+    readonly session: mongoose.Types.ObjectId;
+  };
 
 const LABEL_DATA_SCHEMA = new Schema<LabelData>({
   timestamp: { type: Number },

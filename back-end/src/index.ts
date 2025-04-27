@@ -27,7 +27,7 @@ const startServer = async () => {
     expressMiddleware(server, {
       context: async ({ req, res }) => {
         const sessionId = req.headers["session-id"];
-        return { sessionId };
+        return { sessionId: sessionId as string };
       },
     })
   );

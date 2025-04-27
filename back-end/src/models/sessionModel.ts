@@ -1,11 +1,8 @@
 import mongoose from "mongoose";
+import Session from "../types/Session";
 
-export type SessionDocument = mongoose.Document & {
-  readonly started: Date;
-  readonly ended: Date | null;
-  readonly detections: number;
-  readonly resolved: number;
-};
+export type SessionDocument = mongoose.Document & Session;
+
 const SESSION_SCHEMA = new mongoose.Schema<SessionDocument>({
   started: { type: Date, required: true },
   ended: { type: Date, default: null },
