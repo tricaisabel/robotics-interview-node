@@ -311,37 +311,6 @@ const saveStats = async (sessionId) => {
   }
 };
 
-const endSession = async () => {
-  try {
-    const sessionId = localStorage.getItem(SESSION_ID);
-    const response = await fetch("/graphql", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "Session-ID": sessionId },
-      body: JSON.stringify({
-        query: `mutation { end_session { id ended } }`,
-      }),
-    });
-
-    const result = await response.json();
-    if (result.data?.end_session) {
-      localStorage.removeItem(SESSION_ID);
-      window.location.reload();
-    }
-  } catch (err) {
-    console.error("Failed to end session:", err);
-  }
-};
-
-const handleSession = async () => {
-  const sessionId = localStorage.getItem(SESSION_ID);
-  if (sessionId) {
-    await endSession();
-  } else {
-    await startSession();
-  }
-  renderHandleSessionButton();
-};
-
 const renderHandleSessionButton = async () => {
   const sessionId = localStorage.getItem(SESSION_ID);
   const button = document.querySelector("#start-stop-session");

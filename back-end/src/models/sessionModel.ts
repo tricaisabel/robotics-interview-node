@@ -1,7 +1,5 @@
 import mongoose from "mongoose";
-import Session from "../types/Session";
-
-export type SessionDocument = mongoose.Document & Session;
+import { SessionDocument } from "../types/sessionDocument";
 
 const SESSION_SCHEMA = new mongoose.Schema<SessionDocument>({
   started: { type: Date, required: true },

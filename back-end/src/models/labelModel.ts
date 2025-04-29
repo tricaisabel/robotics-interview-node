@@ -1,12 +1,6 @@
-import mongoose, { Schema, Document } from "mongoose";
-import { LabelData } from "../types/labelData";
-import { Label, LabelBase } from "../types/Label";
-
-type LabelDocument = Document &
-  LabelBase & {
-    readonly image: Buffer | null;
-    readonly session: mongoose.Types.ObjectId;
-  };
+import mongoose, { Schema } from "mongoose";
+import { LabelDocument } from "../types/labelDocument";
+import { LabelData } from "@shared-types/labelData";
 
 const LABEL_DATA_SCHEMA = new Schema<LabelData>({
   timestamp: { type: Number },

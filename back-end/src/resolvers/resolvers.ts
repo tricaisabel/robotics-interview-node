@@ -1,9 +1,8 @@
 import { LabelModel } from "../models/labelModel";
 import { SessionModel } from "../models/sessionModel";
-import { DetectionStats } from "../types/detectionStats";
-import { HasSessionId } from "../types/hasSessionId";
-import { Label } from "../types/Label";
-import Session from "../types/Session";
+import { SessionDocument } from "../types/sessionDocument";
+import { LabelDocument } from "../types/labelDocument";
+import { DetectionStats, HasSessionId, Label, Session } from "@shared-types/index";
 
 export const resolvers = {
   Query: {
@@ -11,7 +10,8 @@ export const resolvers = {
      * List all sessions
      */
     sessions: async (): Promise<Session[]> => {
-      return await SessionModel.find().sort({ started: -1 });
+      const sessions = await SessionModel.find().sort({ started: -1 });
+      return sessions.map(SessionDocument.toPublic);
     },
     /**
      * Find session by id
@@ -20,13 +20,16 @@ export const resolvers = {
       _: unknown,
       args: { id: string }
     ): Promise<Session | null> => {
-      return await SessionModel.findById(args.id);
+      const session = await SessionModel.findById(args.id);
+      return SessionDocument.toPublic(session);
     },
     /**
      * Find current session (not ended yet)
      */
     current_session: async (): Promise<Session | null> => {
-      return await SessionModel.findOne({ ended: null });
+      const session = await SessionModel.findOne({ ended: null });
+
+      return session ? SessionDocument.toPublic(session) : null;
     },
     /**
      * Get session labels
@@ -36,12 +39,7 @@ export const resolvers = {
         "data.session": context.sessionId,
       });
 
-      return labels.map((label) => ({
-        id: label.id,
-        ...label,
-        session: label.session.toHexString(),
-        image: label.image?.toString("base64") ?? null,
-      }));
+      return labels.map(LabelDocument.toPublic);
     },
   },
   Mutation: {
@@ -59,7 +57,7 @@ export const resolvers = {
         throw new Error("Session ID not provided");
       }
 
-      return await SessionModel.findOneAndUpdate(
+      const session = await SessionModel.findOneAndUpdate(
         { _id: sessionId, ended: null },
         {
           detections: detectionStats.detections,
@@ -67,25 +65,29 @@ export const resolvers = {
         },
         { new: true }
       );
+
+      return SessionDocument.toPublic(session);
     },
     /**
      * Create new session if one is not already running
      */
     start_session: async (): Promise<Session> => {
-      const session = await SessionModel.findOne({ ended: null });
+      const activeSession = await SessionModel.findOne({ ended: null });
 
-      if (session) {
+      if (activeSession) {
         throw new Error(
           "An active session is already running. End it before starting a new one."
         );
       }
 
-      return await SessionModel.create({
+      const session = await SessionModel.create({
         started: new Date(),
         ended: null,
         detections: null,
         resolved: null,
       });
+
+      return SessionDocument.toPublic(session);
     },
     /**
      * End session by id
@@ -101,13 +103,15 @@ export const resolvers = {
         throw new Error("Session ID not provided");
       }
 
-      return await SessionModel.findOneAndUpdate(
+      const session = await SessionModel.findOneAndUpdate(
         { _id: sessionId, ended: null },
         {
           ended: new Date(),
         },
         { new: true }
       );
+
+      return SessionDocument.toPublic(session);
     },
   },
 };
